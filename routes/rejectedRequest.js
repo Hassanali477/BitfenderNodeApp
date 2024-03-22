@@ -33,10 +33,6 @@ const RejectRequestSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  // RejectionReason: {
-  //   type: String,
-  //   required: true,
-  // },
 });
 const RejectRequest = mongoose.model("RejectRequest", RejectRequestSchema);
 

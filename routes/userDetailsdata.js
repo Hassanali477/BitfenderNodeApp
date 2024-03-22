@@ -8,6 +8,7 @@ const UserDetailSchema = new mongoose.Schema(
     mobileNo: Number,
     department: String,
     hashedPassword: String,
+    is_Admin: Number,
     token: {
       type: String,
       default: "",
