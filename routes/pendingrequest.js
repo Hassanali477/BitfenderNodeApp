@@ -1,16 +1,20 @@
 const mongoose = require("mongoose");
 
 const requestSchema = new mongoose.Schema({
-  ProductName: String,
-  ClientName: String,
-  NumberOfUsers: Number,
+  CompanyName: String,
+  CompanyAddress: String,
+  ContactPerson: String,
   ContactNo: Number,
-  ProductPrice: Number,
-  // UserEmail: String, // Add UserEmail field
+  Email: String,
+  UserEmail: String, 
+  ProductName: String,
+  NumberOfLicense: Number,
+  TotalLicense: Number,
+  TotalPrice: Number,
+  DateOfIssuance: String,
+  DateOfExpiry: String,
+  AccountManagerName: String,
   CreatedAt: { type: Date, default: Date.now }, // Add CreatedAt field with default value set to current date and time
-  TotalPrice: Number, // Add TotalPrice field
 });
 
-const Request = mongoose.model("Request", requestSchema);
-
-module.exports = Request;
+module.exports = mongoose.model("Request", requestSchema);

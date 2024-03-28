@@ -1,12 +1,20 @@
 const mongoose = require("mongoose");
 
 const adminRequestSchema = new mongoose.Schema({
-  ProductName: String,
-  ClientName: String,
-  NumberOfUsers: Number,
+  CompanyName: String,
+  CompanyAddress: String,
+  ContactPerson: String,
   ContactNo: Number,
+  Email: String,
   UserEmail: String,
-  ProductPrice: Number,
+  ProductName: String,
+  NumberOfLincense: Number,
+  TotalLicense: Number,
+  TotalPrice: Number,
+  DateOfIssuance: String,
+  DateOfExpiry: String,
+  AccountManagerName: String,
+  Message: String,
   status: {
     type: String,
     enum: ["pending", "approved", "rejected"],

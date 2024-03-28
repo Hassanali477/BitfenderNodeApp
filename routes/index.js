@@ -26,7 +26,7 @@ const sendResetPasswordMail = async (name, email, token) => {
       auth: {
         user: process.env.USER_EMAIL, // Update with your email
         pass: process.env.USER_PASSWORD, // Update with your email password
-      },  
+      },
     });
 
     // Define email content
@@ -196,21 +196,41 @@ const authenticateUser = (req, res, next) => {
 };
 
 router.post("/CreateUserData", authenticateUser, async (req, res) => {
-  const { ProductName, ClientName, NumberOfUsers, ContactNo, ProductPrice } =
-    req.body;
+  const {
+    CompanyName,
+    CompanyAddress,
+    ContactPerson,
+    ContactNo,
+    Email,
+    UserEmail,
+    ProductName,
+    NumberOfLicense,
+    TotalLicense,
+    TotalPrice,
+    DateOfIssuance,
+    DateOfExpiry,
+    AccountManagerName,
+  } = req.body;
+  console.log(req.body, "checking data");
   try {
     // const UserEmail = req.user.email; // Retrieve user's email from authenticated user
-    const TotalPrice = NumberOfUsers * ProductPrice; // Calculate total price
     const CreatedAt = Date.now(); // Get current date and time
 
     const newRequest = await Request.create({
-      ProductName: ProductName,
-      ClientName: ClientName,
-      NumberOfUsers: NumberOfUsers,
+      CompanyName: CompanyName,
+      CompanyAddress: CompanyAddress,
+      ContactPerson: ContactPerson,
       ContactNo: ContactNo,
-      ProductPrice: ProductPrice,
-      CreatedAt: CreatedAt,
+      Email: Email,
+      ProductName: ProductName,
+      NumberOfLicense: NumberOfLicense,
+      TotalLicense: TotalLicense,
       TotalPrice: TotalPrice,
+      DateOfIssuance: DateOfIssuance,
+      DateOfExpiry: DateOfExpiry,
+      AccountManagerName: AccountManagerName,
+      UserEmail: UserEmail,
+      CreatedAt: CreatedAt,
     });
 
     res.status(200).json({
@@ -240,8 +260,23 @@ router.get("/pendingRequests", authenticateUser, async (req, res) => {
 
 router.get("/approvedrequest", async (req, res) => {
   try {
-    // Fetch rejected requests from the database
+    // Fetch approved requests from the database
     const approveRequest = await AdminRequest.find({ status: "approved" });
+    const today = new Date(); // Current date
+    const thirtyDaysLater = new Date(today); // 30 days later from today
+    thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 30); // Add 30 days to today's date
+
+    for (let i = 0; i < approveRequest.length; i++) {
+      const expiryDate = new Date(approveRequest[i].DateOfExpiry);
+      const daysLeft = Math.floor((expiryDate - today) / (1000 * 60 * 60 * 24));
+
+      if (daysLeft <= 30 && daysLeft >= 0) {
+        approveRequest[
+          i
+        ].Message = `Your license will expire in ${daysLeft} days.`;
+      }
+    }
+
     res.status(200).json(approveRequest);
   } catch (error) {
     console.error("Error:", error);
@@ -253,58 +288,77 @@ router.get("/approvedrequest", async (req, res) => {
 router.post("/approveRequest/:id", async (req, res) => {
   // Check if the user is allowed to approve requests
   const {
-    email,
-    ProductName,
-    ClientName,
-    NumberOfUsers,
+    CompanyName,
+    CompanyAddress,
+    ContactPerson,
     ContactNo,
-    ProductPrice,
+    Email,
+    UserEmail,
+    ProductName,
+    NumberOfLicense,
+    TotalLicense,
+    TotalPrice,
+    DateOfIssuance,
+    DateOfExpiry,
+    AccountManagerName,
   } = req.body;
 
-  const user = await User.findOne({ email });
-  console.log("User Found:", user); // Log the user object for debugging
-  if (!user) {
-    return res.status(404).json({ status: "error", message: "User not found" });
-  }
-
-  if (user.department !== "Admin") {
-    return res.status(403).json({
-      status: "error",
-      message: "You are not authorized to approve requests",
-    });
-  }
-
-  // Proceed with request approval logic
-  const { id } = req.params;
-  console.log(id, "checking id");
-  // const { email } = req.user;
   try {
-    // Update the request status to "approved" in the database
-    // await Request.findByIdAndUpdate(id, { approvedBy: email });
+    // Find the user by email
+    // var email = UserEmail;
+    const user = await User.findOne({ email: UserEmail });
+    console.log("User Found:", user);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ status: "error", message: "User not found" });
+    }
+
+    if (user.department !== "Admin") {
+      return res.status(403).json({
+        status: "error",
+        message: "You are not authorized to approve requests",
+      });
+    }
+
+    // Proceed with request approval logic
+    const { id } = req.params;
+    console.log(id, "checking id");
+
     // Add the request to the AdminRequest collection with the "approved" status and additional data
     const adminRequestData = {
-      approvedBy: email,
+      approvedBy: user.email, // Use user's email from the database
       rejectedBy: "",
-      ProductName: ProductName,
-      ClientName: ClientName,
-      NumberOfUsers: NumberOfUsers,
+      CompanyName: CompanyName,
+      CompanyAddress: CompanyAddress,
+      ContactPerson: ContactPerson,
       ContactNo: ContactNo,
-      ProductPrice: ProductPrice,
+      Email: Email,
+      UserEmail: UserEmail,
+      ProductName: ProductName,
+      NumberOfLicense: NumberOfLicense,
+      TotalLicense: TotalLicense,
+      TotalPrice: TotalPrice,
+      DateOfIssuance: DateOfIssuance,
+      DateOfExpiry: DateOfExpiry,
+      AccountManagerName: AccountManagerName,
+      Message: "",
       status: "approved",
       dateNow: moment().format("YYYY-MM-DD"),
       time: moment().format("HH:mm:ss"),
       requestId: id,
     };
+
     await AdminRequest.create(adminRequestData);
-    // Delete the request from the database
     await Request.findByIdAndDelete(id);
+
     // Send success response with the ID of the approved order
     res.status(200).json({
       status: "success",
       message: "Request approved successfully",
       orderId: id,
       orderStatus: "approved",
-      adminEmail: email,
+      adminEmail: user.email,
     });
   } catch (error) {
     console.error("Error:", error);
@@ -330,21 +384,30 @@ router.get("/rejectedRequests", async (req, res) => {
 router.post("/rejectRequest/:id", async (req, res) => {
   const { id } = req.params;
   const {
-    email,
-    ProductName,
-    ClientName,
-    NumberOfUsers,
+    CompanyName,
+    CompanyAddress,
+    ContactPerson,
     ContactNo,
-    ProductPrice,
+    Email,
+    UserEmail,
+    ProductName,
+    NumberOfLicense,
+    TotalLicense,
+    TotalPrice,
+    DateOfIssuance,
+    DateOfExpiry,
+    AccountManagerName,
   } = req.body;
+  var email = UserEmail;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: UserEmail });
+    console.log(UserEmail, "Checking email reject");
     console.log("User Found:", user); // Log the user object for debugging
-    // if (!user) {
-    //   return res
-    //     .status(404)
-    //     .json({ status: "error", message: "User not found" });
-    // }
+    if (!user) {
+      return res
+        .status(404)
+        .json({ status: "error", message: "User not found" });
+    }
     if (user.department !== "Admin") {
       return res.status(403).json({
         status: "error",
@@ -357,11 +420,19 @@ router.post("/rejectRequest/:id", async (req, res) => {
       const adminRequestData = {
         approvedBy: "",
         rejectedBy: email,
-        ProductName: ProductName,
-        ClientName: ClientName,
-        NumberOfUsers: NumberOfUsers,
+        CompanyName: CompanyName,
+        CompanyAddress: CompanyAddress,
+        ContactPerson: ContactPerson,
         ContactNo: ContactNo,
-        ProductPrice: ProductPrice,
+        Email: Email,
+        UserEmail: UserEmail,
+        ProductName: ProductName,
+        NumberOfLicense: NumberOfLicense,
+        TotalLicense: TotalLicense,
+        TotalPrice: TotalPrice,
+        DateOfIssuance: DateOfIssuance,
+        DateOfExpiry: DateOfExpiry,
+        AccountManagerName: AccountManagerName,
         status: "rejected",
         dateNow: moment().format("YYYY-MM-DD"),
         time: moment().format("HH:mm:ss"),
