@@ -42,7 +42,6 @@ const sendResetPasswordMail = async (name, email, token) => {
         <p>Bitdefender Team</p>`,
     };
 
-    // Send mail
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.error("Failed to send reset password email:", error);
@@ -398,7 +397,7 @@ router.post("/rejectRequest/:id", async (req, res) => {
     DateOfExpiry,
     AccountManagerName,
   } = req.body;
-  var email = UserEmail;
+  // var email = UserEmail;
   try {
     const user = await User.findOne({ email: UserEmail });
     console.log(UserEmail, "Checking email reject");
@@ -526,7 +525,7 @@ router.get("/resetPassword/:token", async (req, res) => {
 });
 
 router.post("/resetPassword", async (req, res) => {
-  const { token, oldPassword, newPassword, confirmPassword } = req.body;
+  const { token, newPassword, confirmPassword } = req.body;
   try {
     // Find user by reset token
     const user = await User.findOne({ token });
@@ -537,15 +536,12 @@ router.post("/resetPassword", async (req, res) => {
         .status(404)
         .json({ success: false, message: "Invalid or expired token" });
     }
-    const isPasswordValid = await bcrypt.compare(
-      oldPassword,
-      user.hashedPassword
-    );
-    if (!isPasswordValid) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Old password is incorrect" });
-    }
+    // const isPasswordValid = await bcrypt.compare(user.hashedPassword);
+    // if (!isPasswordValid) {
+    //   return res
+    //     .status(400)
+    //     .json({ success: false, message: "Old password is incorrect" });
+    // }
     // Check if new password matches confirm password
     if (newPassword !== confirmPassword) {
       return res

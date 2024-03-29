@@ -70,14 +70,7 @@
     <div class="container">
       <h1 class="heading">Reset Your Password</h1>
       <form id="resetForm" action="/resetPassword" method="post">
-        <input
-          type="password"
-          name="oldPassword"
-          id="oldPassword"
-          placeholder="Old Password"
-          required
-        />
-        <br /><br />
+        <br />
         <input
           type="password"
           name="newPassword"
@@ -85,7 +78,7 @@
           placeholder="New Password"
           required
         />
-        <br /><br />
+        <br />
         <input
           type="password"
           name="confirmPassword"
@@ -106,7 +99,6 @@
           event.preventDefault(); // Prevent default form submission
 
           // Perform client-side validation
-          var oldPassword = document.getElementById("oldPassword").value;
           var newPassword = document.getElementById("newPassword").value;
           var confirmPassword =
             document.getElementById("confirmPassword").value;
