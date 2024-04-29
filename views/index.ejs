@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -116,4 +116,123 @@
         });
     </script>
   </body>
-</html>
+</html> -->
+
+<!-- // this is code of Cpanel
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reset Password</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f1f1f1;
+      }
+
+      .navbar {
+        background-color: #333;
+        overflow: hidden;
+        display: flex;
+        justify-content: center; /* Center the content horizontally */
+      }
+
+      .navbar h1 {
+        margin: 0;
+        color: white;
+        padding: 14px 20px;
+      }
+
+      .container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .heading {
+        text-align: center;
+        color: #333;
+      }
+
+      input[type="password"] {
+        width: calc(100% - 40px);
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        background-color: #4caf50;
+        color: #fff;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <h1>Reset Password</h1>
+    </div>
+    <div class="container">
+      <h1 class="heading">Reset Your Password</h1>
+      <form id="resetForm" action="https://nodestaging.a2zcreatorz.com/nodeapp/resetPassword" method="post">
+        <br />
+        <input
+          type="password"
+          name="newPassword"
+          id="newPassword"
+          placeholder="New Password"
+          required
+        />
+        <br />
+        <input
+          type="password"
+          name="confirmPassword"
+          id="confirmPassword"
+          placeholder="Confirm New Password"
+          required
+        />
+        <br /><br />
+        <input type="hidden" name="token" value="<%= token %>" />
+        <button type="submit" id="resetBtn">Reset Password</button>
+      </form>
+    </div>
+
+    <script>
+      document
+        .getElementById("resetForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          var newPassword = document.getElementById("newPassword").value;
+          var confirmPassword =
+            document.getElementById("confirmPassword").value;
+
+          if (newPassword !== confirmPassword) {
+            alert("Passwords do not match");
+            return;
+          }
+          if (newPassword.length < 8) {
+            alert("Password must be at least 8 characters long");
+            return;
+          }
+          // If validation passes, submit the form
+          this.submit();
+        });
+    </script>
+  </body>
+</html> -->
