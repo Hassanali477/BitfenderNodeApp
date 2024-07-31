@@ -586,6 +586,12 @@
 // module.exports = router;
 
 // This is code of Cpanel
+// This is code of Cpanel
+// This is code of Cpanel
+// This is code of Cpanel
+// This is code of Cpanel
+// This is code of Cpanel
+// This is code of Cpanel 
 
 // const dotenvResult = require("dotenv").config();
 // const express = require("express");
@@ -708,10 +714,6 @@
 //     return res.status(500).json({ status: 'error', message: 'Internal server error' });
 //   }
 // });
-
-
-
-
 
 // router.post("/verify-email", async (req, res) => {
 //   const { token } = req.body;
@@ -1118,7 +1120,6 @@
 //   }
 // });
 
-
 // router.post("/forgot-password", async (req, res) => {
 //   try {
 //     const { email } = req.body;
@@ -1164,7 +1165,7 @@
 //   try {
 //     const token = req.params.token;
 //     const user = await User.findOne({ token });
-    
+
 //     if (!user) {
 //       return res.status(404).send("Invalid or expired token");
 //     }
@@ -1187,7 +1188,7 @@
 //         .status(404)
 //         .json({ success: false, message: "Invalid or expired token" });
 //     }
-   
+
 //     if (newPassword !== confirmPassword) {
 //       return res
 //         .status(400)
@@ -1213,7 +1214,6 @@
 //   }
 // });
 
-
 // router.get("/resetPassword", async (req, res) => {
 //   const token = req.query.token || req.params.token;
 //   console.log(token, 'checking token')
@@ -1222,13 +1222,11 @@
 //     if (!user) {
 //       return res.status(404).send("Invalid or expired token");
 //     }
-//     res.render("index", { token }); 
+//     res.render("index", { token });
 //   } catch (error) {
 //     console.error("Error:", error);
 //     res.status(500).send("Internal server error");
 //   }
 // });
 
-
 // module.exports = router;
-

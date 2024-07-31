@@ -1,0 +1,9 @@
+This is code of Cpanel
+
+
+DirectoryIndex disabled
+RewriteEngine On
+RewriteRule ^$ http://127.0.0.1:3500/ [P,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ http://127.0.0.1:3500/$1 [P,L]
